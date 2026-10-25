@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b10">
+  <title>Grey Man · 3D Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    :root{color-scheme:dark;--bg:#080b10;--panel:#10151d;--line:#232b36;--muted:#8491a2;--text:#edf2f7;--accent:#a9c8ed}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}
+    .app{height:100%;display:grid;grid-template-columns:300px 1fr}.sidebar{z-index:2;background:linear-gradient(180deg,#10151d,#0d1117);border-right:1px solid var(--line);padding:27px 22px;display:flex;flex-direction:column;gap:28px}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:34px;height:34px;border:1px solid #36465a;border-radius:10px;display:grid;place-items:center;color:var(--accent);font-size:18px;background:#131d29}.brand-name{font-size:13px;letter-spacing:.11em;text-transform:uppercase;font-weight:650}.kicker{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}h1{font-size:25px;line-height:1.2;letter-spacing:-.035em;margin:9px 0 8px;font-weight:560}.intro{font-size:12px;line-height:1.65;color:#99a5b4;margin:0;max-width:240px}.section{display:grid;gap:12px}.section-head{display:flex;justify-content:space-between;align-items:center}.section-title{font-size:11px;font-weight:600;color:#d8dee7}.badge{font-size:9px;color:#d3d9e1;background:#202731;border:1px solid #323b47;padding:4px 7px;border-radius:99px}.control{display:flex;align-items:center;justify-content:space-between;color:#aab4c1;font-size:11px}.slider{width:100%;accent-color:#adc9e8}.range-meta{display:flex;justify-content:space-between;font-size:10px;color:#778596}.toggles{display:grid;gap:10px}.toggle-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#b4becb}.switch{appearance:none;width:31px;height:18px;border-radius:99px;background:#29313c;position:relative;cursor:pointer;transition:.2s}.switch:before{content:"";position:absolute;left:3px;top:3px;width:12px;height:12px;border-radius:50%;background:#9aa7b6;transition:.2s}.switch:checked{background:#496786}.switch:checked:before{left:16px;background:#d8e8fa}.credit{margin-top:auto;border-top:1px solid var(--line);padding-top:14px;color:#8592a2;font-size:10px;line-height:1.7}.credit a{color:#cbd9e8;text-decoration:none}.credit a:hover{text-decoration:underline}.stage{position:relative;min-width:0;background:radial-gradient(ellipse at 51% 41%,#18212c 0,#0e131a 38%,#090c11 76%)}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}canvas.dragging{cursor:grabbing}.topbar{position:absolute;top:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}.view-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#a4b0bf}.reset{pointer-events:auto;border:1px solid #303a48;background:#131922;color:#dbe3ed;padding:8px 12px;font-size:10px;border-radius:7px;cursor:pointer}.reset:hover{background:#1b2430}.hint{position:absolute;bottom:23px;left:50%;transform:translateX(-50%);border:1px solid #28313b;background:#10151ccc;padding:8px 12px;border-radius:99px;font-size:10px;color:#98a4b2;white-space:nowrap;pointer-events:none}.hint b{color:#dce5f0;font-weight:550}.loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#aab6c4;font-size:12px;background:#10151dcc;border:1px solid #28313b;border-radius:9px;padding:11px 14px;pointer-events:none}.loading.error{color:#ffb7ae;max-width:min(420px,80%);text-align:center;line-height:1.6}.stage.ready .loading{display:none}
+    @media(max-width:720px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}.sidebar{padding:14px 16px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}.brand-mark{width:28px;height:28px}.brand-name{font-size:11px}.intro{display:none}h1{font-size:19px;margin:5px 0}.sidebar>div:nth-child(2){display:flex;align-items:center;justify-content:space-between}.sidebar>div:nth-child(2) .kicker{display:none}.section{gap:7px}.section-head{display:none}.toggles{grid-template-columns:1fr 1fr;gap:6px 14px}.toggle-row{font-size:10px}.stage{min-height:0}.topbar{top:14px;left:15px;right:15px}.hint{bottom:12px;font-size:9px}.credit{display:none}}
+  </style>
+  <script type="importmap">
+    {"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <main class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">✳</div><div class="brand-name">Form / Study</div></div>
+      <div><div class="kicker">Human anatomy · 01</div><h1>Grey Man</h1><p class="intro">The sculpted male base model by Pichael Productions. Drag to orbit around the model; scroll to move closer.</p></div>
+      <div class="section"><div class="section-head"><span class="section-title">View settings</span><span class="badge">ORIGINAL MODEL</span></div><div class="toggles"><label class="toggle-row">Ground grid<input class="switch" id="gridToggle" type="checkbox" checked></label><label class="toggle-row">Auto rotate<input class="switch" id="rotateToggle" type="checkbox"></label></div></div>
+      <div class="section"><label class="control" for="scale">Model scale <span id="scaleValue">100%</span></label><input class="slider" id="scale" type="range" min="75" max="125" value="100"><div class="range-meta"><span>75%</span><span>125%</span></div></div>
+      <div class="credit">Model by <a href="https://sketchfab.com/Pichael3000" target="_blank" rel="noopener noreferrer">Pichael Productions</a><br>“Male Character - Grey Man” · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a><br><a href="https://sketchfab.com/3d-models/male-character-grey-man-f3139eca23564711bb8c3c83b0e12303" target="_blank" rel="noopener noreferrer">View original on Sketchfab ↗</a></div>
+    </aside>
+    <section class="stage" id="stage" aria-label="Interactive 3D body viewer"><canvas id="viewer" aria-label="Interactive rotating 3D human body. Drag to look around."></canvas><div class="topbar"><span class="view-label">GREY MAN · 3D MODEL</span><button class="reset" id="reset">Reset view ↺</button></div><div class="hint"><b>Drag</b> to orbit &nbsp;·&nbsp; <b>Scroll</b> to zoom &nbsp;·&nbsp; <b>Right-drag</b> to pan</div><div class="loading" id="loading" role="status">Loading 3D model…</div></section>
+  </main>
+  <script type="module">
+    import * as THREE from 'three';
+    import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const stage = document.querySelector('#stage');
+    const canvas = document.querySelector('#viewer');
+    const loading = document.querySelector('#loading');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(stage.clientWidth, stage.clientHeight, false);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.12;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#0b0f15');
+    scene.fog = new THREE.Fog('#0b0f15', 10, 25);
+    const camera = new THREE.PerspectiveCamera(34, stage.clientWidth / stage.clientHeight, 0.05, 100);
+    camera.position.set(3.8, 2.4, 6.4);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.minDistance = 2.8;
+    controls.maxDistance = 11;
+    controls.maxPolarAngle = Math.PI * 0.92;
+
+    scene.add(new THREE.HemisphereLight(0xdce5f1, 0x393b40, 2.1));
+    const key = new THREE.DirectionalLight(0xfff5e9, 3.2);
+    key.position.set(-3.5, 6, 4.5);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xb6c9e2, 1.25);
+    fill.position.set(4, 2, -4);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 2.0);
+    rim.position.set(1, 5, -2);
+    scene.add(rim);
+
+    const grid = new THREE.GridHelper(6, 24, 0x71839a, 0x354252);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.34;
+    scene.add(grid);
+
+    let model = null;
+    let originalScale = 1;
+    const manager = new THREE.LoadingManager();
+    manager.setURLModifier((url) => /blackeye1\.jpg/i.test(url)
+      ? new URL('./assets/male-character-grey-man/textures/blackeye1.jpg', window.location.href).href
+      : url);
+    const loader = new FBXLoader(manager);
+    loader.load('./assets/male-character-grey-man/source/GreyMan1.fbx', (object) => {
+      model = object;
+      const bounds = new THREE.Box3().setFromObject(model);
+      const size = bounds.getSize(new THREE.Vector3());
+      const center = bounds.getCenter(new THREE.Vector3());
+      const height = Math.max(size.y, size.x, size.z);
+      originalScale = 3.4 / height;
+      model.scale.setScalar(originalScale);
+      model.position.set(-center.x * originalScale, -bounds.min.y * originalScale, -center.z * originalScale);
+      model.traverse((child) => {
+        if (!child.isMesh) return;
+        child.castShadow = true;
+        child.receiveShadow = true;
+        if (child.material) {
+          const materials = Array.isArray(child.material) ? child.material : [child.material];
+          for (const material of materials) {
+            if (material.map) material.map.colorSpace = THREE.SRGBColorSpace;
+            material.needsUpdate = true;
+          }
+        }
+      });
+      scene.add(model);
+      controls.target.set(0, 1.62, 0);
+      controls.update();
+      stage.classList.add('ready');
+    }, undefined, (error) => {
+      console.error('Could not load the Grey Man FBX model.', error);
+      loading.classList.add('error');
+      loading.textContent = 'Could not load the model. Start the project server with “pnpm start” and open http://localhost:4173.';
+    });
+
+    function resize() {
+      const width = stage.clientWidth;
+      const height = stage.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+    }
+    new ResizeObserver(resize).observe(stage);
+    document.querySelector('#gridToggle').addEventListener('change', (event) => { grid.visible = event.target.checked; });
+    document.querySelector('#rotateToggle').addEventListener('change', (event) => { controls.autoRotate = event.target.checked; });
+    document.querySelector('#scale').addEventListener('input', (event) => {
+      const factor = Number(event.target.value) / 100;
+      document.querySelector('#scaleValue').textContent = `${event.target.value}%`;
+      if (model) model.scale.setScalar(originalScale * factor);
+    });
+    document.querySelector('#reset').addEventListener('click', () => {
+      camera.position.set(3.8, 2.4, 6.4);
+      controls.target.set(0, 1.62, 0);
+      controls.update();
+      document.querySelector('#scale').value = 100;
+      document.querySelector('#scaleValue').textContent = '100%';
+      if (model) model.scale.setScalar(originalScale);
+    });
+
+    renderer.setAnimationLoop(() => {
+      controls.update();
+      renderer.render(scene, camera);
+    });
+  </script>
+</body>
+</html>
